@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR Surveillance System - Knowledge Base</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        nav {
+            background: #0b2948;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        nav ul li a.active,
+        nav ul li a:hover {
+            background: #123c69;
+        }
+
+        header {
+            background: #123c69;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid #123c69;
+        }
+
+        .card h3 {
+            color: #123c69;
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .card .disease {
+            font-weight: bold;
+            color: #d62828;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .card .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .badge-critical {
+            background: #ffe6e6;
+            color: #d62828;
+        }
+
+        .badge-high {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: #123c69;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">🦠 AMR Surveillance System</div>
+        <ul>
+            <li><a href="index.html">Search</a></li>
+            <li><a href="dashboard overview.html">Dashboard</a></li>
+            <li><a href="records.html">Lab Records</a></li>
+            <li><a href="analytics.html">AI Analytics</a></li>
+            <li><a href="knowledge.html" class="active">Knowledge Base</a></li>
+            <li><a href="regional.html">Ward Heatmap</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="guidelines.html">Guidelines</a></li>
+            
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Pathogen & Antibiotic Knowledge Base</h1>
+        <p>Medical reference for bacterial infections and recommended clinical drugs</p>
+    </header>
+
+    <div class="container">
+
+        <!-- Search Filter -->
+        <div class="search-box">
+            <input type="text" id="searchInput" onkeyup="searchCards()"
+                placeholder="Search by Bacteria name or Disease (e.g. E. coli, Pneumonia)...">
+        </div>
+
+        <!-- Disease & Drug Grid -->
+        <div class="grid-container" id="knowledgeGrid">
+
+            <div class="card">
+                <h3>Escherichia coli (E. coli)</h3>
+                <div class="disease">Primary Infection: Urinary Tract Infection (UTI)</div>
+                <p><strong>Common Symptoms:</strong> Burning sensation during urination, abdominal pain.</p>
+                <p><strong>First-line Antibiotics:</strong> Ciprofloxacin, Nitrofurantoin, Ampicillin.</p>
+                <p><strong>Resistance Risk:</strong> High against Ampicillin.</p>
+                <span class="badge badge-high">WHO Priority: High</span>
+            </div>
+
+            <div class="card">
+                <h3>Klebsiella pneumoniae</h3>
+                <div class="disease">Primary Infection: Pneumonia & Bloodstream Infection</div>
+                <p><strong>Common Symptoms:</strong> High fever, shortness of breath, chest pain.</p>
+                <p><strong>First-line Antibiotics:</strong> Ceftriaxone, Meropenem, Gentamicin.</p>
+                <p><strong>Resistance Risk:</strong> Severe against 3rd Gen Cephalosporins.</p>
+                <span class="badge badge-critical">WHO Priority: Critical</span>
+            </div>
+
+            <div class="card">
+                <h3>Pseudomonas aeruginosa</h3>
+                <div class="disease">Primary Infection: Hospital-acquired Wounds & Burn Infections</div>
+                <p><strong>Common Symptoms:</strong> Blue-green pus formation, fever, localized swelling.</p>
+                <p><strong>First-line Antibiotics:</strong> Piperacillin-Tazobactam, Amikacin.</p>
+                <p><strong>Resistance Risk:</strong> Multi-drug resistant strains emerging.</p>
+                <span class="badge badge-critical">WHO Priority: Critical</span>
+            </div>
+
+            <div class="card">
+                <h3>Staphylococcus aureus</h3>
+                <div class="disease">Primary Infection: Skin Infections & Abscesses</div>
+                <p><strong>Common Symptoms:</strong> Red bumps, boils, skin swelling with pain.</p>
+                <p><strong>First-line Antibiotics:</strong> Oxacillin, Vancomycin, Daptomycin.</p>
+                <p><strong>Resistance Risk:</strong> MRSA (Methicillin-Resistant S. aureus).</p>
+                <span class="badge badge-high">WHO Priority: High</span>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>AMR Surveillance System | Page 4: Pathogen Knowledge Base</p>
+    </footer>
+
+    <script>
+        function searchCards() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let cardText = cards[i].innerText.toLowerCase();
+                if (cardText.includes(input)) {
+                    cards[i].style.display = "block";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

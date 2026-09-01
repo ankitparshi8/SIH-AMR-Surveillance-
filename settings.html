@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AMR Surveillance System</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --primary-color: #123c69;
+            --nav-bg: #123c69;
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --text-color: #e0e0e0;
+            --border-color: #0f3460;
+            --primary-color: #0f3460;
+            --nav-bg: #0f3460;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 🔗 TOP NAVIGATION BAR */
+        nav {
+            background-color: var(--nav-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+        }
+
+        header {
+            padding: 20px 30px 10px 30px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 0 20px 40px 20px;
+        }
+
+        /* 🪟 CARD STYLING */
+        .settings-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-card h3 {
+            margin-top: 0;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+
+        .sub-text {
+            font-size: 12px;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dotted var(--border-color);
+        }
+
+        /* 🔘 TOGGLE SWITCH STYLING */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #28a745;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        /* 🔔 TOAST NOTIFICATION */
+        #toast {
+            visibility: hidden;
+            min-width: 280px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 15px;
+            position: fixed;
+            z-index: 1000;
+            right: 30px;
+            bottom: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.5s, bottom 0.5s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        .btn-save {
+            background-color: #123c69;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-save:hover {
+            background-color: #0f3054;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 🔗 TOP NAVIGATION BAR (প্রজেক্টের মূল পেজ লিংকস) -->
+    <nav>
+        <div class="logo">🦠 AMR Surveillance System</div>
+        <ul>
+            <li><a href="index.html">Search</a></li>
+            <li><a href="dashboard overview.html">Dashboard</a></li>
+            <li><a href="records.html">Lab Records</a></li>
+            <li><a href="analytics.html">AI Analytics</a></li>
+            <li><a href="knowledge.html">Knowledge Base</a></li>
+            <li><a href="regional.html">Ward Heatmap</a></li>
+            <li><a href="settings.html" class="active">Settings</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="guidelines.html">Guidelines</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>⚙️ System Preferences & Settings</h1>
+        <p style="color: #666;">Manage system thresholds, alerts, permissions, and user options.</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. THRESHOLD & ALERT CONFIGURATIONS -->
+        <div class="settings-card">
+            <h3>🚨 Threshold & Alert Configurations</h3>
+            <div class="form-group">
+                <label>High Risk Resistance Alert Threshold (%)</label>
+                <input type="number" value="60">
+                <div class="sub-text">Triggers an emergency notification when resistance exceeds this level.</div>
+            </div>
+            <div class="form-group">
+                <label>AI Model Prediction Confidence Threshold</label>
+                <select>
+                    <option value="balanced" selected>Balanced (75%+ Accuracy)</option>
+                    <option value="strict">Strict (85%+ Accuracy)</option>
+                    <option value="lenient">Lenient (65%+ Accuracy)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 2. USER ROLES & ACCESS CONTROL -->
+        <div class="settings-card">
+            <h3>👤 User Roles & Access Control</h3>
+            <div class="form-group">
+                <label>Active System Role</label>
+                <select>
+                    <option value="doctor" selected>Clinical Doctor</option>
+                    <option value="microbiologist">Microbiologist</option>
+                    <option value="admin">System Administrator</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 3. USER PROFILE DETAILS -->
+        <div class="settings-card">
+            <h3>📝 Account Profile Info</h3>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" value="Dr. Rahat Ahmed">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" value="rahat.ahmed@hospital.org">
+            </div>
+        </div>
+
+        <!-- 4. ACCOUNT SECURITY -->
+        <div class="settings-card">
+            <h3>🔒 Account Security</h3>
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" placeholder="Enter new password to change">
+            </div>
+            <div class="toggle-group">
+                <span>Enable Two-Factor Authentication (2FA)</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-group">
+                <span>Auto Logout After 15 Minutes Inactivity</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 5. APPEARANCE & DISPLAY (DARK/LIGHT MODE) -->
+        <div class="settings-card">
+            <h3>🌙 Appearance & Display</h3>
+            <div class="toggle-group">
+                <span>Enable Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>System Language</label>
+                <select>
+                    <option value="en">English</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 6. NOTIFICATIONS & SYSTEM BEHAVIOR -->
+        <div class="settings-card">
+            <h3>⚙️ Notifications & System Behavior</h3>
+            <div class="toggle-group">
+                <span>Automated Email Alerts for ICU Outbreaks</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-group">
+                <span>Enable Real-time Data Syncing</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 7. MOBILE DEVICE PERMISSIONS -->
+        <div class="settings-card">
+            <h3>📱 Mobile Device Permissions</h3>
+            <div class="toggle-group">
+                <span>Allow Mobile Push Notifications</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-group">
+                <span>Hospital GPS / Location Services (For Ward Syncing)</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- SAVE BUTTON -->
+        <div style="text-align: right; margin-bottom: 20px;">
+            <button class="btn-save" onclick="triggerSaveNotification()">💾 Save Changes</button>
+        </div>
+
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast">✅ All Settings Saved Successfully!</div>
+
+    <script>
+        function toggleDarkMode() {
+            let isDark = document.getElementById('darkModeToggle').checked;
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function triggerSaveNotification() {
+            let toast = document.getElementById("toast");
+            toast.className = "show";
+            setTimeout(function () {
+                toast.className = toast.className.replace("show", "");
+            }, 3000);
+        }
+    </script>
+
+</body>
+
+</html>

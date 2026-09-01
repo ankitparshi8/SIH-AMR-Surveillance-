@@ -1,0 +1,175 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #222;
+}
+
+/* Header */
+
+header {
+    background: #182848;
+    color: white;
+    padding: 22px 30px;
+}
+
+header h1 {
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+header p {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+
+/* Main Container */
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 25px auto;
+}
+
+
+/* Dashboard Cards */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.number {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+
+/* Sections */
+
+.section {
+    background: white;
+    padding: 22px;
+    margin-bottom: 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.section h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+
+/* Table */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 13px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f1f3f7;
+    font-size: 14px;
+}
+
+td {
+    font-size: 14px;
+}
+
+
+/* Risk Levels */
+
+.high {
+    color: #c62828;
+    font-weight: bold;
+}
+
+.medium {
+    color: #ef6c00;
+    font-weight: bold;
+}
+
+.low {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+
+/* Risk Calculator */
+
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+button {
+    padding: 10px 18px;
+    background: #182848;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+#result {
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+
+/* Early Warning */
+
+.alert {
+    background: #fff3f3;
+    border-left: 5px solid #c62828;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.alert strong {
+    font-size: 17px;
+}
+
+.alert p {
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR Surveillance System - Lab Records</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        nav {
+            background: #0b2948;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        nav ul li a.active,
+        nav ul li a:hover {
+            background: #123c69;
+        }
+
+        header {
+            background: #123c69;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .section {
+            background: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #123c69;
+        }
+
+        form {
+            display: grid;
+            gap: 14px;
+        }
+
+        input,
+        select,
+        button {
+            padding: 12px;
+            border-radius: 7px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        button {
+            background: #123c69;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0b2948;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #eaf1f8;
+            color: #123c69;
+        }
+
+        .resistant {
+            color: #d62828;
+            font-weight: bold;
+        }
+
+        .sensitive {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: #123c69;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">🦠 AMR Surveillance System</div>
+        <ul>
+            <li><a href="index.html">Search</a></li>
+            <li><a href="dashboard overview.html">Dashboard</a></li>
+            <li><a href="records.html" class="active">Lab Records</a></li>
+            <li><a href="analytics.html">AI Analytics</a></li>
+            <li><a href="knowledge.html">Knowledge Base</a></li>
+            <li><a href="regional.html">Ward Heatmap</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="guidelines.html">Guidelines</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Laboratory Data Entry & Records</h1>
+        <p>Input new sample test results and view stored surveillance logs</p>
+    </header>
+
+    <div class="container">
+        <!-- Input Form Section -->
+        <div class="section">
+            <h2>📋 Enter New Laboratory Test Data</h2>
+            <form id="amrForm">
+                <input type="text" id="bacteria" placeholder="Bacteria Name (e.g., E. coli)" required>
+                <select id="antibiotic" required>
+                    <option value="">Select Antibiotic</option>
+                    <option>Ampicillin</option>
+                    <option>Amoxicillin</option>
+                    <option>Ciprofloxacin</option>
+                    <option>Gentamicin</option>
+                    <option>Meropenem</option>
+                    <option>Ceftriaxone</option>
+                </select>
+                <select id="result" required>
+                    <option value="">Select Test Result</option>
+                    <option value="Resistant">Resistant ❌</option>
+                    <option value="Sensitive">Sensitive ✅</option>
+                </select>
+                <button type="submit">Submit Record</button>
+            </form>
+        </div>
+
+        <!-- Table Section -->
+        <div class="section">
+            <h2>📊 Sample Records History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bacteria Name</th>
+                        <th>Antibiotic Tested</th>
+                        <th>Result Status</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <tr>
+                        <td>E. coli</td>
+                        <td>Ampicillin</td>
+                        <td class="resistant">Resistant ❌</td>
+                    </tr>
+                    <tr>
+                        <td>Klebsiella</td>
+                        <td>Ceftriaxone</td>
+                        <td class="resistant">Resistant ❌</td>
+                    </tr>
+                    <tr>
+                        <td>E. coli</td>
+                        <td>Ciprofloxacin</td>
+                        <td class="sensitive">Sensitive ✅</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>AMR Surveillance System | Page 2: Lab Records</p>
+    </footer>
+
+    <script>
+        document.getElementById("amrForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const bacteria = document.getElementById("bacteria").value.trim();
+            const antibiotic = document.getElementById("antibiotic").value;
+            const result = document.getElementById("result").value;
+
+            const row = document.createElement("tr");
+            const isResistant = result === "Resistant";
+            row.innerHTML = `
+                <td>${bacteria}</td>
+                <td>${antibiotic}</td>
+                <td class="${isResistant ? 'resistant' : 'sensitive'}">
+                    ${result} ${isResistant ? '❌' : '✅'}
+                </td>
+            `;
+            document.getElementById("dataTable").appendChild(row);
+            this.reset();
+            alert("Laboratory record added successfully!");
+        });
+    </script>
+</body>
+
+</html>

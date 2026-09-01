@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Live Regional Heatmap - AMR Surveillance</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #cbd5e1;
+            --nav-bg: #123c69;
+            --grid-bg: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --border-color: #334155;
+            --nav-bg: #020617;
+            --grid-bg: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        nav {
+            background-color: var(--nav-bg);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav .logo {
+            font-size: 17px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+        }
+
+        .theme-btn,
+        .sound-btn {
+            background: #10b981;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .sound-btn.muted {
+            background: #64748b;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        #locationAuthOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 60, 105, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .auth-card {
+    background: var(--card-bg);
+    color: var(--text-color);
+    padding: 35px 20px 20px 20px;
+    border-radius: 14px;
+    width: 440px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    overflow: visible;
+    border: 1px solid var(--border-color);
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.4s;
+    z-index: 10;
+}
+
+.close-modal-btn:hover {
+    background: #dc3545;
+    color: white;
+}
+
+        .auth-card select,
+        .auth-card button:not(.close-modal-btn){
+            width: 90%;
+            padding: 11px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .btn-verify {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-verify:hover {
+            background-color: #059669;
+        }
+
+        .btn-gps {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-gps:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-reset {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #475569;
+        }
+
+        .change-loc-switch {
+            background: var(--card-bg);
+            border: 2px solid #ef4444;
+            color: var(--text-color);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .change-loc-switch:hover {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+        }
+
+        #outbreakAlertBanner {
+            display: none;
+            background: #dc3545;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
+        }
+
+        .status-header {
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pulse-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            color: #059669;
+            font-size: 13px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .controls-bar select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 13px;
+        }
+
+        .grid-board-wrapper {
+            background-color: var(--grid-bg);
+            border: 2px dashed #94a3b8;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 185px;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .heatmap-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .risk-high {
+                grid-column: span 2 !important;
+                grid-row: span 1 !important;
+            }
+        }
+
+        .ward-card {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--border-color);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .risk-high {
+            border-color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.08);
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .risk-medium {
+            border-color: #f59e0b;
+            background-color: rgba(245, 158, 11, 0.08);
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .risk-low {
+            border-color: #10b981;
+            background-color: rgba(16, 185, 129, 0.08);
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .stat-line {
+            font-size: 12px;
+            margin: 2px 0;
+        }
+
+        .forecast-badge {
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .graph-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body data-theme="light">
+
+    <!-- 🔐 LOCATION & GPS MANDATORY MODAL -->
+    <div id="locationAuthOverlay" style="display: none;">
+        <div class="auth-card">
+            <button class="close-modal-btn" onclick="closeModal()" title="Cancel & Close">✕</button>
+            <h3 style="margin-top:5px;">📍 Target Location & GPS Filter</h3>
+            <p style="font-size: 12px; opacity: 0.8;">Select State, District, and Hospital across India.</p>
+
+            <button class="btn-gps" onclick="requestGPS()">📡 Turn On / Verify GPS Location</button>
+            <p id="gpsStatusText" style="font-size: 11px; color: #f87171; margin: 5px 0;">GPS: Ready for detection</p>
+
+            <select id="countrySelect" onchange="updateStates()">
+                <option value="">-- Select Country --</option>
+            </select>
+
+            <select id="stateSelect" onchange="updateDistricts()">
+                <option value="">-- Select State / Region --</option>
+            </select>
+
+            <select id="districtSelect" onchange="updateHospitals()">
+                <option value="">-- Select District / Area --</option>
+            </select>
+
+            <select id="hospitalSelect">
+                <option value="">-- Select Hospital --</option>
+            </select>
+
+            <button class="btn-verify" onclick="verifyAndLaunch()">Launch AI Live Stream</button>
+            <button class="btn-reset" onclick="resetSelections()">🔄 Reset Selections</button>
+        </div>
+    </div>
+
+    <!-- 🌐 TOPBAR WITH ALERTS & SOUND TOGGLE -->
+    <nav>
+        <div class="logo">🦠 AMR Surveillance System</div>
+        <ul>
+            <li><a href="index.html">Search</a></li>
+            <li><a href="dashboard overview.html">Dashboard</a></li>
+            <li><a href="records.html">Records</a></li>
+            <li><a href="analytics.html">Analytics</a></li>
+            <li><a href="knowledge-base.html">Knowledge Base</a></li>
+            <li><a href="regional.html" class="active">Ward Heatmap</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="guidelines.html">Guidelines</a></li>
+            <li><button id="soundToggleBtn" class="sound-btn" onclick="toggleSound()">🔊 Sound On</button></li>
+            <li><button class="theme-btn" onclick="toggleTheme()">🌙 Dark Mode</button></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="outbreakAlertBanner">
+            🚨 CRITICAL OUTBREAK ALERT: Resistance rate has exceeded 80% in active wards! Immediate medical intervention
+            required.
+        </div>
+
+        <div class="status-header">
+            <div>
+                <h3 id="activeTitle" style="margin:0;">🗺️ Live AI Regional Heatmap</h3>
+                <small id="selectedLocInfo" style="opacity: 0.7;">Filtered by Location & Hospital</small><br>
+                <button class="change-loc-switch" onclick="openModalManually()">
+                    ⚙️ Change Hospital / Location
+                </button>
+            </div>
+            <div class="pulse-badge">
+                <span class="dot"></span> AI Stream Active (5s Refresh)
+            </div>
+        </div>
+
+        <div class="controls-bar">
+            <span><b>Filter by Pathogen:</b></span>
+            <select id="pathogenFilter" onchange="filterWardsByPathogen()">
+                <option value="all">All Pathogens (Default)</option>
+            </select>
+        </div>
+
+        <h3>📊 Dynamic Ward Matrix (Auto-Rotates every 2 mins | 4 Wards)</h3>
+        <div class="grid-board-wrapper">
+            <div class="heatmap-grid" id="gridContainer"></div>
+        </div>
+
+        <div class="graph-card">
+            <h3>📈 Live Real-Time Resistance Rate Analysis & Forecast</h3>
+            <canvas id="liveResistanceChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let locationData = {
+            "India": {
+                "West Bengal": {
+                    "Kolkata": [
+                        {
+                            name: "SSKM Hospital (IPGMER) Kolkata", wards: [
+                                { name: "Trauma ICU", bug: "Acinetobacter baumannii", drug: "Colistin", rate: 86, forecast: "↗️ Critical Surge" },
+                                { name: "Emergency Ward", bug: "Klebsiella pneumoniae", drug: "Meropenem", rate: 74, forecast: "↗️ Rising" },
+                                { name: "General Medicine", bug: "E. coli", drug: "Ceftriaxone", rate: 52, forecast: "➡️ Stable" },
+                                { name: "Cardiology ICU", bug: "Pseudomonas aeruginosa", drug: "Amikacin", rate: 48, forecast: "↘️ Decreasing" }
+                            ]
+                        }
+                    ],
+                    "North 24 Parganas": [
+                        {
+                            name: "Barasat District Hospital", wards: [
+                                { name: "Emergency Ward", bug: "Escherichia coli", drug: "Ceftriaxone", rate: 60, forecast: "↗️ Rising" },
+                                { name: "General Indoor", bug: "Staphylococcus aureus", drug: "Cloxacillin", rate: 55, forecast: "➡️ Stable" },
+                                { name: "Pediatric Ward", bug: "Klebsiella pneumoniae", drug: "Amikacin", rate: 44, forecast: "↘️ Decreasing" },
+                                { name: "Surgical Unit", bug: "Proteus mirabilis", drug: "Ciprofloxacin", rate: 50, forecast: "➡️ Stable" }
+                            ]
+                        }
+                    ]
+                },
+                "Delhi": {
+                    "New Delhi": [
+                        {
+                            name: "AIIMS New Delhi", wards: [
+                                { name: "Main ICU", bug: "Acinetobacter baumannii", drug: "Colistin", rate: 88, forecast: "↗️ Critical Surge" },
+                                { name: "Emergency Ward", bug: "Klebsiella pneumoniae", drug: "Meropenem", rate: 79, forecast: "↗️ Rising" },
+                                { name: "Burn Unit", bug: "Pseudomonas aeruginosa", drug: "Piperacillin", rate: 85, forecast: "↗️ Critical Surge" },
+                                { name: "Medicine Ward", bug: "E. coli", drug: "Ceftriaxone", rate: 60, forecast: "➡️ Stable" }
+                            ]
+                        }
+                    ]
+                },
+                "Maharashtra": {
+                    "Mumbai": [
+                        {
+                            name: "KEM Hospital Mumbai", wards: [
+                                { name: "Medical ICU", bug: "Klebsiella pneumoniae", drug: "Meropenem", rate: 81, forecast: "↗️ Critical Surge" },
+                                { name: "Surgical ICU", bug: "Acinetobacter baumannii", drug: "Colistin", rate: 87, forecast: "↗️ Critical Surge" },
+                                { name: "General Ward", bug: "E. coli", drug: "Cefotaxime", rate: 59, forecast: "➡️ Stable" },
+                                { name: "Cardio Unit", bug: "Pseudomonas aeruginosa", drug: "Amikacin", rate: 50, forecast: "➡️ Stable" }
+                            ]
+                        }
+                    ]
+                }
+            }
+        };
+
+        let gpsVerified = false;
+        let selectedHospitalWards = [];
+        let currentDisplayBatch = [];
+        let liveChart = null;
+        let batchIndex = 0;
+        let selectedFilterBug = "all";
+        let soundEnabled = true; // সাউন্ডের স্টেট ট্র্যাক করার জন্য ভেরিয়েবল
+
+      window.onload = function () {
+            populateCountries();
+            checkLocalStorageSelection();
+
+            // সাউন্ডের প্রিফারেন্স চেক করার কোড
+            let savedSound = localStorage.getItem('amr_sound_pref');
+            if (savedSound !== null) {
+                soundEnabled = (savedSound === 'true');
+                let btn = document.getElementById('soundToggleBtn');
+                if (btn) {
+                    if (soundEnabled) {
+                        btn.innerText = "🔊 Sound On";
+                        btn.classList.remove('muted');
+                    } else {
+                        btn.innerText = "🔇 Sound Off";
+                        btn.classList.add('muted');
+                    }
+                }
+            }
+        };
+
+        // সাউন্ড অন/অফ করার ফাংশন
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('amr_sound_pref', soundEnabled); // ইউজারের পছন্দ সেভ করা হলো
+            let btn = document.getElementById('soundToggleBtn');
+            if (btn) {
+                if (soundEnabled) {
+                    btn.innerText = "🔊 Sound On";
+                    btn.classList.remove('muted');
+                } else {
+                    btn.innerText = "🔇 Sound Off";
+                    btn.classList.add('muted');
+                }
+            }
+        }
+        function populateCountries() {
+            let countrySel = document.getElementById('countrySelect');
+            countrySel.innerHTML = '<option value="">-- Select Country --</option>';
+            for (let country in locationData) {
+                countrySel.innerHTML += `<option value="${country}">${country}</option>`;
+            }
+        }
+
+        function requestGPS() {
+            let gpsStatus = document.getElementById('gpsStatusText');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        gpsVerified = true;
+                        gpsStatus.style.color = "#10b981";
+                        gpsStatus.innerText = `GPS Active [Lat: ${position.coords.latitude.toFixed(2)}, Lon: ${position.coords.longitude.toFixed(2)}]`;
+                    },
+                    (error) => {
+                        gpsVerified = true;
+                        gpsStatus.style.color = "#f59e0b";
+                        gpsStatus.innerText = "GPS Bypassed Automatically (Manual Selection Enabled)";
+                    }
+                );
+            } else {
+                gpsVerified = true;
+                gpsStatus.style.color = "#f59e0b";
+                gpsStatus.innerText = "Geolocation Unsupported (Bypassed)";
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('locationAuthOverlay').style.display = 'none';
+            if (selectedHospitalWards.length === 0) {
+                document.getElementById('countrySelect').value = "India";
+                updateStates();
+                document.getElementById('stateSelect').value = "West Bengal";
+                updateDistricts();
+                document.getElementById('districtSelect').value = "North 24 Parganas";
+                updateHospitals();
+                document.getElementById('hospitalSelect').value = "0";
+                verifyAndLaunch();
+            }
+        }
+
+        function openModalManually() {
+            document.getElementById('locationAuthOverlay').style.display = 'flex';
+        }
+
+        function resetSelections() {
+            localStorage.removeItem('amr_selected_hospital');
+            document.getElementById('countrySelect').value = "";
+            document.getElementById('stateSelect').innerHTML = '<option value="">-- Select State / Region --</option>';
+            document.getElementById('districtSelect').innerHTML = '<option value="">-- Select District / Area --</option>';
+            document.getElementById('hospitalSelect').innerHTML = '<option value="">-- Select Hospital --</option>';
+            document.getElementById('gpsStatusText').innerText = "GPS: Ready for detection";
+            document.getElementById('gpsStatusText').style.color = "#f87171";
+            gpsVerified = false;
+        }
+
+        function checkLocalStorageSelection() {
+            let savedLoc = localStorage.getItem('amr_selected_hospital');
+            if (savedLoc) {
+                try {
+                    let data = JSON.parse(savedLoc);
+                    document.getElementById('countrySelect').value = data.country;
+                    updateStates();
+                    document.getElementById('stateSelect').value = data.state;
+                    updateDistricts();
+                    document.getElementById('districtSelect').value = data.dist;
+                    updateHospitals();
+                    document.getElementById('hospitalSelect').value = data.hospIdx;
+
+                    verifyAndLaunch(true);
+                } catch (e) {
+                    document.getElementById('locationAuthOverlay').style.display = 'flex';
+                }
+            } else {
+                document.getElementById('locationAuthOverlay').style.display = 'flex';
+            }
+        }
+
+        function updateStates() {
+            let country = document.getElementById('countrySelect').value;
+            let stateSel = document.getElementById('stateSelect');
+            stateSel.innerHTML = '<option value="">-- Select State / Region --</option>';
+            document.getElementById('districtSelect').innerHTML = '<option value="">-- Select District / Area --</option>';
+            document.getElementById('hospitalSelect').innerHTML = '<option value="">-- Select Hospital --</option>';
+
+            if (country && locationData[country]) {
+                for (let state in locationData[country]) {
+                    stateSel.innerHTML += `<option value="${state}">${state}</option>`;
+                }
+            }
+        }
+
+        function updateDistricts() {
+            let country = document.getElementById('countrySelect').value;
+            let state = document.getElementById('stateSelect').value;
+            let distSel = document.getElementById('districtSelect');
+            distSel.innerHTML = '<option value="">-- Select District / Area --</option>';
+            document.getElementById('hospitalSelect').innerHTML = '<option value="">-- Select Hospital --</option>';
+
+            if (state && locationData[country][state]) {
+                for (let dist in locationData[country][state]) {
+                    distSel.innerHTML += `<option value="${dist}">${dist}</option>`;
+                }
+            }
+        }
+
+        function updateHospitals() {
+            let country = document.getElementById('countrySelect').value;
+            let state = document.getElementById('stateSelect').value;
+            let dist = document.getElementById('districtSelect').value;
+            let hospSel = document.getElementById('hospitalSelect');
+            hospSel.innerHTML = '<option value="">-- Select Hospital --</option>';
+
+            if (dist && locationData[country][state][dist]) {
+                let hospitals = locationData[country][state][dist];
+                hospitals.forEach((h, index) => {
+                    hospSel.innerHTML += `<option value="${index}">${h.name}</option>`;
+                });
+            }
+        }
+
+        function verifyAndLaunch(isAutoLoad = false) {
+            let country = document.getElementById('countrySelect').value;
+            let state = document.getElementById('stateSelect').value;
+            let dist = document.getElementById('districtSelect').value;
+            let hospIdx = document.getElementById('hospitalSelect').value;
+
+            if (!country || !state || !dist || hospIdx === "") {
+                if (!isAutoLoad) {
+                    alert("Please select Country, State, District/Area, and Hospital completely!");
+                }
+                return;
+            }
+
+            localStorage.setItem('amr_selected_hospital', JSON.stringify({ country, state, dist, hospIdx }));
+
+            let hospitalObj = locationData[country][state][dist][hospIdx];
+            selectedHospitalWards = hospitalObj.wards;
+
+            let pathogenSelect = document.getElementById('pathogenFilter');
+            pathogenSelect.innerHTML = '<option value="all">All Pathogens (Default)</option>';
+            let uniqueBugs = [...new Set(selectedHospitalWards.map(w => w.bug))];
+            uniqueBugs.forEach(bug => {
+                pathogenSelect.innerHTML += `<option value="${bug}">${bug}</option>`;
+            });
+
+            document.getElementById('activeTitle').innerText = `🗺️ Heatmap: ${hospitalObj.name}`;
+            document.getElementById('selectedLocInfo').innerText = `Location: ${dist}, ${state}, ${country}`;
+            document.getElementById('locationAuthOverlay').style.display = 'none';
+
+            initDashboard();
+        }
+
+        function initDashboard() {
+            if (!liveChart) {
+                initChart();
+            }
+            rotateAndRenderWards();
+
+            if (!window.aiIntervalStarted) {
+                window.aiIntervalStarted = true;
+                setInterval(simulateAILiveUpdates, 5000);
+
+                setInterval(() => {
+                    let filtered = getFilteredWards();
+                    if (filtered.length > 4) {
+                        batchIndex = (batchIndex + 4) % filtered.length;
+                        rotateAndRenderWards();
+                    }
+                }, 120000);
+            }
+        }
+
+        function getFilteredWards() {
+            if (selectedFilterBug === "all") return selectedHospitalWards;
+            return selectedHospitalWards.filter(w => w.bug === selectedFilterBug);
+        }
+
+        function filterWardsByPathogen() {
+            selectedFilterBug = document.getElementById('pathogenFilter').value;
+            batchIndex = 0;
+            rotateAndRenderWards();
+        }
+
+        function rotateAndRenderWards() {
+            let activeList = getFilteredWards();
+            if (activeList.length <= 4) {
+                currentDisplayBatch = activeList;
+            } else {
+                currentDisplayBatch = [];
+                for (let i = 0; i < 4; i++) {
+                    let idx = (batchIndex + i) % activeList.length;
+                    currentDisplayBatch.push(activeList[idx]);
+                }
+            }
+            renderGridAndChart(currentDisplayBatch);
+            checkEmergencyOutbreak(activeList);
+        }
+
+        function playOutbreakBeep() {
+            if (!soundEnabled) return; // সাউন্ড বন্ধ থাকলে শব্দ বাজবে না
+            try {
+                let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {
+                console.log("Audio Context Blocked");
+            }
+        }
+
+        function checkEmergencyOutbreak(list) {
+            let hasCritical = list.some(w => w.rate >= 80);
+            let banner = document.getElementById('outbreakAlertBanner');
+            if (hasCritical) {
+                banner.style.display = 'block';
+                playOutbreakBeep();
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        function renderGridAndChart(dataList) {
+            let grid = document.getElementById('gridContainer');
+            grid.innerHTML = "";
+
+            dataList.forEach((item) => {
+                let card = document.createElement('div');
+                let riskClass = item.rate >= 60 ? "risk-high" : (item.rate >= 30 ? "risk-medium" : "risk-low");
+                let riskText = item.rate >= 60 ? `${item.rate}% (CRITICAL)` : (item.rate >= 30 ? `${item.rate}% (Medium Risk)` : `${item.rate}% (Safe)`);
+                let rateColor = item.rate >= 60 ? "#dc3545" : (item.rate >= 30 ? "#f59e0b" : "#10b981");
+
+                card.className = `ward-card ${riskClass}`;
+                card.innerHTML = `
+                    <div>
+                        <div style="font-weight:bold; font-size:14px;">${item.name}</div>
+                        <hr style="border:0; border-top: 1px dashed var(--border-color); margin: 4px 0;">
+                        <div class="stat-line"><b>Pathogen:</b> ${item.bug}</div>
+                        <div class="stat-line"><b>Effective Drug:</b> ${item.drug}</div>
+                    </div>
+                    <div>
+                        <div class="stat-line"><b>Resistance:</b> <span style="color: ${rateColor}; font-weight: bold;">${riskText}</span></div>
+                        <div class="forecast-badge">AI Trend: ${item.forecast}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            updateChart(dataList);
+        }
+
+        function initChart() {
+            let ctx = document.getElementById('liveResistanceChart').getContext('2d');
+            liveChart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: [], datasets: [{ label: 'Resistance Rate (%)', data: [], backgroundColor: [] }] },
+                options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } } }
+            });
+        }
+
+        function updateChart(dataList) {
+            if (!liveChart) return;
+            liveChart.data.labels = dataList.map(i => i.name);
+            liveChart.data.datasets[0].data = dataList.map(i => i.rate);
+            liveChart.data.datasets[0].backgroundColor = dataList.map(i =>
+                i.rate >= 60 ? 'rgba(220, 53, 69, 0.8)' : (i.rate >= 30 ? 'rgba(245, 158, 11, 0.8)' : 'rgba(16, 185, 129, 0.8)')
+            );
+            liveChart.update();
+        }
+
+        function simulateAILiveUpdates() {
+            if (selectedHospitalWards.length === 0) return;
+            selectedHospitalWards.forEach(w => {
+                let diff = Math.floor(Math.random() * 7) - 3;
+                w.rate = Math.max(10, Math.min(95, w.rate + diff));
+            });
+            rotateAndRenderWards();
+        }
+
+        function toggleTheme() {
+            let body = document.body;
+            let btn = document.querySelector('.theme-btn');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = "☀️ Light Mode";
+            } else {
+                body.setAttribute('data-theme', 'light');
+                btn.innerText = "🌙 Dark Mode";
+            }
+        }
+    </script>
+</body>
+
+</html>

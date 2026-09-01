@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR Surveillance System - AI Enterprise Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+            overflow-x: hidden;
+        }
+
+        /* --- 1. CORPORATE INTRO / SPLASH ANIMATION --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0b2948 0%, #123c69 50%, #071a2e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .intro-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards ease-in-out;
+        }
+
+        .intro-icon {
+            font-size: 50px;
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+
+        .intro-title {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .intro-subtitle {
+            color: #8bb9e8;
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeIn 1s 0.6s forwards ease-in-out;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Loading Bar (Enterprise Style) */
+        .loader-bar {
+            width: 220px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            margin-top: 35px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            border-radius: 4px;
+            animation: loadProgress 2.2s ease-in-out forwards;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(0, 210, 255, 0.4));
+            }
+
+            50% {
+                transform: scale(1.08);
+                filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.8));
+            }
+        }
+
+        @keyframes loadProgress {
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 65%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        .fade-out {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+
+        /* --- 2. MAIN WEBSITE UI --- */
+        nav {
+            background: #0b2948;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        nav ul li a.active,
+        nav ul li a:hover {
+            background: #123c69;
+        }
+
+        /* Search Banner Header (Amazon / Enterprise Style) */
+        .search-hero {
+            background: linear-gradient(135deg, #123c69, #0b2948);
+            color: white;
+            padding: 45px 20px;
+            text-align: center;
+        }
+
+        .search-hero h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .search-hero p {
+            color: #cce0f5;
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-container {
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .search-container button {
+            background: #00d2ff;
+            color: #0b2948;
+            font-weight: bold;
+            border: none;
+            padding: 0 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .search-container button:hover {
+            background: #3a7bd5;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #123c69;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background: #0b2948;
+            color: white;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. INTRO / SPLASH ANIMATION OVERLAY -->
+    <div id="intro-overlay">
+        <div class="intro-logo-container">
+            <span class="intro-icon">🦠</span>
+            <span class="intro-title">AMR SURVEILLANCE</span>
+        </div>
+        <div class="intro-subtitle">AI-Powered Clinical Intelligence Platform</div>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN SITE CONTENT -->
+    <nav>
+        <div class="logo">🦠 AMR Surveillance System</div>
+        <ul>
+            <li><a href="index.html" class="active">Search</a></li>
+            <li><a href="dashboard overview.html">Dashboard</a></li>
+            <li><a href="records.html">Lab Records</a></li>
+            <li><a href="analytics.html">AI Analytics</a></li>
+            <li><a href="knowledge.html">Knowledge Base</a></li>
+            <li><a href="regional.html">Ward Heatmap</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="guidelines.html">Guidelines</a></li>
+        </ul>
+    </nav>
+
+    <!-- SEARCH HERO SECTION -->
+    <div class="search-hero">
+        <h1>Global AMR Clinical Database & Intelligence</h1>
+        <p>Search for pathogens, resistance strains, ward analytics, or drug guidelines</p>
+        <div class="search-container">
+            <input type="text" placeholder="Search E. coli, ICU ward, Ceftriaxone resistance...">
+            <button onclick="handleSearch()">Search</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📊 Real-time Surveillance Metrics</h2>
+        <br>
+        <div class="container">
+            <h2>📊 Real-time Surveillance Metrics</h2>
+        
+            <br>
+            <div class="card-section"
+                style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); margin-bottom: 25px;">
+                <h2 style="margin-bottom: 15px; font-size: 20px; color: #123c69;">AMR Surveillance Data</h2>
+        
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="searchInput" onkeyup="handleSearch()"
+                        placeholder="Search bacteria or antibiotic (e.g. E. coli, Ampicillin)..."
+                        style="width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; outline: none;">
+                </div>
+        
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa; border-bottom: 2px solid #edf2f7; text-align: left;">
+                            <th style="padding: 12px;">Bacteria</th>
+                            <th style="padding: 12px;">Antibiotic</th>
+                            <th style="padding: 12px;">Total Tests</th>
+                            <th style="padding: 12px;">Resistant</th>
+                            <th style="padding: 12px;">Resistance %</th>
+                            <th style="padding: 12px;">Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #edf2f7;">
+                            <td style="padding: 12px;">E. coli</td>
+                            <td style="padding: 12px;">Ampicillin</td>
+                            <td style="padding: 12px;">100</td>
+                            <td style="padding: 12px;">65</td>
+                            <td style="padding: 12px;">65%</td>
+                            <td style="padding: 12px; color: #dc3545; font-weight: bold;">HIGH</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #edf2f7;">
+                            <td style="padding: 12px;">Klebsiella</td>
+                            <td style="padding: 12px;">Ceftriaxone</td>
+                            <td style="padding: 12px;">80</td>
+                            <td style="padding: 12px;">56</td>
+                            <td style="padding: 12px;">70%</td>
+                            <td style="padding: 12px; color: #dc3545; font-weight: bold;">HIGH</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #edf2f7;">
+                            <td style="padding: 12px;">E. coli</td>
+                            <td style="padding: 12px;">Ciprofloxacin</td>
+                            <td style="padding: 12px;">70</td>
+                            <td style="padding: 12px;">11</td>
+                            <td style="padding: 12px;">15.7%</td>
+                            <td style="padding: 12px; color: #28a745; font-weight: bold;">LOW</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <h3>Total Samples Analyzed</h3>
+                    <div class="value">24,580</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Outbreak Alerts</h3>
+                    <div class="value" style="color: #d62828;">3 Wards</div>
+                </div>
+                <div class="stat-card">
+                    <h3>AI Prediction Accuracy</h3>
+                    <div class="value" style="color: #16803c;">94.2%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>High-Risk Strains</h3>
+                    <div class="value" style="color: #f77f00;">12 Strains</div>
+                </div>
+            </div>
+        </div>
+        
+    <footer>
+        <p>AMR Surveillance System | Enterprise AI Healthcare Infrastructure</p>
+    </footer>
+
+    <script>
+        // Intro Animation Logic
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const intro = document.getElementById('intro-overlay');
+                intro.classList.add('fade-out');
+            }, 2500); // 2.5 Seconds Intro Animation Duration
+        });
+
+        function handleSearch() {
+            alert("Redirecting to Knowledge Base for relevant clinical data...");
+            window.location.href = "knowledge.html";
+        }
+    </script>
+</body>
+
+</html>

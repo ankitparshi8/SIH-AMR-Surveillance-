@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMR Early Warning System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      background: #eef2f6;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* NAVBAR & HEADER */
+    nav {
+      background: #0f2b48;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .logo {
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 12px;
+    }
+
+    nav ul li a {
+      color: #d0e1f9;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      transition: 0.3s;
+    }
+
+    nav ul li a.active,
+    nav ul li a:hover {
+      background: #1a4975;
+      color: white;
+    }
+
+    header {
+      background: #1a4975;
+      color: white;
+      padding: 25px;
+      text-align: left;
+      padding-left: 5%;
+    }
+
+    header h1 {
+      font-size: 24px;
+    }
+
+    header p {
+      color: #a4c4e8;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* CONTAINER & CARDS */
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: 25px auto;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .stat-card .title {
+      color: #6c757d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .stat-card .value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a4975;
+      margin-top: 8px;
+    }
+
+    .card-section {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      margin-bottom: 25px;
+    }
+
+    .card-section h2 {
+      font-size: 18px;
+      color: #1a4975;
+      margin-bottom: 18px;
+    }
+
+    /* TABLE STYLING */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px 12px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f8f9fa;
+      color: #555;
+      border-bottom: 2px solid #edf2f7;
+    }
+
+    td {
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .badge-high {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .badge-low {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    /* CALCULATOR & ALERTS */
+    select,
+    button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid #ced4da;
+      font-size: 14px;
+    }
+
+    button {
+      background: #1a4975;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-left: 8px;
+    }
+
+    button:hover {
+      background: #0f2b48;
+    }
+
+    .alert-box {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      border-radius: 6px;
+      color: #856404;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #0f2b48;
+      color: white;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION BAR -->
+  <nav>
+    <div class="logo">🦠 AMR Early Warning</div>
+    <ul>
+      <li><a href="index.html">Search</a></li>
+      <li><a href="dashboard overview.html" class="active">Dashboard</a></li>
+      <li><a href="records.html">Lab Records</a></li>
+      <li><a href="analytics.html">AI Analytics</a></li>
+      <li><a href="knowledge.html">Knowledge Base</a></li>
+      <li><a href="regional.html">Ward Heatmap</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="guidelines.html">Guidelines</a></li>
+    </ul>
+  </nav>
+
+  <!-- HEADER -->
+  <header>
+    <h1>AMR Early Warning System</h1>
+    <p>AI-assisted Antimicrobial Resistance Surveillance Prototype</p>
+  </header>
+
+  <div class="container">
+
+    <!-- TOP METRICS CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="title">Total Samples</div>
+        <div class="value">250</div>
+      </div>
+      <div class="stat-card">
+        <div class="title">Resistant Cases</div>
+        <div class="value">132</div>
+      </div>
+      <div class="stat-card">
+        <div class="title">Average Resistance</div>
+        <div class="value">52.8%</div>
+      </div>
+      <div class="stat-card">
+        <div class="title">High Risk Alerts</div>
+        <div class="value" style="color: #dc3545;">3</div>
+      </div>
+    </div>
+
+    <!-- SURVEILLANCE DATA TABLE -->
+    <div class="card-section">
+      <h2>AMR Surveillance Data</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Bacteria</th>
+            <th>Antibiotic</th>
+            <th>Total Tests</th>
+            <th>Resistant</th>
+            <th>Resistance %</th>
+            <th>Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>E. coli</td>
+            <td>Ampicillin</td>
+            <td>100</td>
+            <td>65</td>
+            <td>65%</td>
+            <td><span class="badge-high">HIGH</span></td>
+          </tr>
+          <tr>
+            <td>Klebsiella</td>
+            <td>Ceftriaxone</td>
+            <td>80</td>
+            <td>56</td>
+            <td>70%</td>
+            <td><span class="badge-high">HIGH</span></td>
+          </tr>
+          <tr>
+            <td>E. coli</td>
+            <td>Ciprofloxacin</td>
+            <td>70</td>
+            <td>11</td>
+            <td>15.7%</td>
+            <td><span class="badge-low">LOW</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- AMR RISK CALCULATOR -->
+    <div class="card-section">
+      <h2>AMR Risk Calculator</h2>
+      <p style="font-size: 14px; color: #555; margin-bottom: 12px;">Select resistance percentage:</p>
+      <div style="display: flex; align-items: center;">
+        <select id="riskSelect">
+          <option value="10">10%</option>
+          <option value="50">50%</option>
+          <option value="70">70%</option>
+        </select>
+        <button onclick="calculateRisk()">Calculate Risk</button>
+      </div>
+      <div id="riskResult" style="margin-top: 15px; font-weight: bold; font-size: 14px;"></div>
+    </div>
+
+    <!-- EARLY WARNING NOTIFICATION -->
+    <div class="card-section">
+      <h2>🚨 Early Warning System Alert</h2>
+      <div class="alert-box">
+        ⚠️ <strong>High Risk Warning:</strong> Ampicillin and Ceftriaxone resistance levels are above 60%. Critical
+        intervention recommended for ICU wards.
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>AMR Surveillance System | AI-assisted Antimicrobial Resistance Surveillance</p>
+  </footer>
+
+  <script>
+    // Risk Calculator Logic
+    function calculateRisk() {
+      const val = document.getElementById("riskSelect").value;
+      const res = document.getElementById("riskResult");
+      if (val >= 60) {
+        res.innerHTML = "<span style='color: #dc3545;'>Risk Level: CRITICAL (Immediate intervention required)</span>";
+      } else if (val >= 30) {
+        res.innerHTML = "<span style='color: #ffc107;'>Risk Level: MODERATE (Monitor closely)</span>";
+      } else {
+        res.innerHTML = "<span style='color: #28a745;'>Risk Level: LOW (Standard baseline)</span>";
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR Surveillance System - Clinical Guidelines</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        nav {
+            background: #0b2948;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        nav ul li a.active,
+        nav ul li a:hover {
+            background: #123c69;
+        }
+
+        header {
+            background: #123c69;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .section {
+            background: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+            color: #123c69;
+            border-bottom: 2px solid #eaf1f8;
+            padding-bottom: 8px;
+        }
+
+        .aware-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .aware-card {
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .access {
+            background: #16803c;
+        }
+
+        .watch {
+            background: #f77f00;
+        }
+
+        .reserve {
+            background: #d62828;
+        }
+
+        .aware-card h3 {
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .aware-card p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .checklist {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+
+        .checklist li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: #123c69;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">🦠 AMR Surveillance System</div>
+        <ul>
+            <li><a href="index.html">Search</a></li>
+            <li><a href="dashboard overview.html">Dashboard</a></li>
+            <li><a href="records.html">Lab Records</a></li>
+            <li><a href="analytics.html">AI Analytics</a></li>
+            <li><a href="knowledge.html">Knowledge Base</a></li>
+            <li><a href="regional.html">Ward Heatmap</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="guidelines.html" class="active">Guidelines</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Clinical Guidelines & Stewardship</h1>
+        <p>WHO AWaRe Classification and Prescription Best Practices</p>
+    </header>
+
+    <div class="container">
+
+        <!-- WHO AWaRe Classification -->
+        <div class="section">
+            <h2>🌍 WHO AWaRe Classification Framework</h2>
+            <div class="aware-grid">
+                <div class="aware-card access">
+                    <h3>🟢 ACCESS Group</h3>
+                    <p>First and second-choice antibiotics for common infections. High therapeutic value and lower
+                        resistance potential.</p>
+                    <br>
+                    <small><strong>Examples:</strong> Amoxicillin, Ampicillin, Doxycycline</small>
+                </div>
+                <div class="aware-card watch">
+                    <h3>🟠 WATCH Group</h3>
+                    <p>Antibiotics with higher resistance potential. Recommended only for specific, limited indications.
+                    </p>
+                    <br>
+                    <small><strong>Examples:</strong> Ciprofloxacin, Ceftriaxone, Meropenem</small>
+                </div>
+                <div class="aware-card reserve">
+                    <h3>🔴 RESERVE Group</h3>
+                    <p>"Last resort" options that should be reserved for confirmed multi-drug resistant infections.</p>
+                    <br>
+                    <small><strong>Examples:</strong> Colistin, Linezolid</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prescribing Best Practices -->
+        <div class="section">
+            <h2>✅ Clinical Prescribing Checklist</h2>
+            <ul class="checklist">
+                <li>✔️ <strong>Confirm Bacterial Infection:</strong> Avoid prescribing antibiotics for viral upper
+                    respiratory infections.</li>
+                <li>✔️ <strong>Obtain Culture Reports:</strong> Send lab cultures before initiating broad-spectrum
+                    empirical therapy.</li>
+                <li>✔️ <strong>De-escalation Protocol:</strong> Switch from broad-spectrum to narrow-spectrum drugs once
+                    lab results arrive.</li>
+                <li>✔️ <strong>Optimize Dosage:</strong> Ensure dose duration is strictly adhered to prevent incomplete
+                    course mutation risks.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>AMR Surveillance System | Page 8: Clinical Guidelines & Stewardship</p>
+    </footer>
+
+</body>
+
+</html>
