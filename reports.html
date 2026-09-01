@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR Surveillance System - Reports & Export</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        nav {
+            background: #0b2948;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        nav ul li a.active,
+        nav ul li a:hover {
+            background: #123c69;
+        }
+
+        header {
+            background: #123c69;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .section {
+            background: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+            color: #123c69;
+            border-bottom: 2px solid #eaf1f8;
+            padding-bottom: 8px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-pdf {
+            background: #d62828;
+            color: white;
+        }
+
+        .btn-csv {
+            background: #16803c;
+            color: white;
+        }
+
+        .btn-print {
+            background: #123c69;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f4f8;
+            color: #123c69;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: #123c69;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">🦠 AMR Surveillance System</div>
+        <ul>
+            <li><a href="index.html">Search</a></li>
+            <li><a href="dashboard overview.html">Dashboard</a></li>
+            <li><a href="records.html">Lab Records</a></li>
+            <li><a href="analytics.html">AI Analytics</a></li>
+            <li><a href="knowledge.html">Knowledge Base</a></li>
+            <li><a href="regional.html">Ward Heatmap</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="reports.html" class="active">Reports</a></li>
+            <li><a href="guidelines.html">Guidelines</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Surveillance Reports & Export Center</h1>
+        <p>Generate, filter, and export official AMR data reports for clinical auditing</p>
+    </header>
+
+    <div class="container">
+
+        <div class="section">
+            <h2>📑 Generate Custom Surveillance Report</h2>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>Start Date</label>
+                    <input type="date" value="2026-08-01">
+                </div>
+                <div class="filter-group">
+                    <label>End Date</label>
+                    <input type="date" value="2026-08-31">
+                </div>
+                <div class="filter-group">
+                    <label>Pathogen Filter</label>
+                    <select>
+                        <option value="all">All Pathogens</option>
+                        <option value="ecoli">E. coli</option>
+                        <option value="klebsiella">Klebsiella pneumoniae</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Department / Ward</label>
+                    <select>
+                        <option value="all">All Wards</option>
+                        <option value="icu">ICU</option>
+                        <option value="opd">OPD</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-pdf" onclick="exportData('PDF')">📄 Export as PDF</button>
+                <button class="btn-csv" onclick="exportData('CSV')">📊 Export as CSV / Excel</button>
+                <button class="btn-print" onclick="window.print()">🖨️ Print Report View</button>
+            </div>
+        </div>
+<!-- 1. Input Form Section -->
+<div class="add-box"
+    style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <h3 style="margin-bottom: 15px; color: #123c69;">➕ Add Custom Report Record</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="inputReportID" placeholder="Report ID (e.g. #REP-2026-09)"
+            style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1;">
+        <input type="text" id="inputPathogen" placeholder="Pathogen Name"
+            style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1;">
+        <input type="text" id="inputRate" placeholder="Resistant Rate (e.g. 50%)"
+            style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1;">
+        <select id="inputStatus" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <option value="HIGH (Completed)">HIGH (Completed)</option>
+            <option value="LOW (Archived)">LOW (Archived)</option>
+        </select>
+        <button type="button" id="addBtn"
+            style="padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Add
+            Row</button>
+    </div>
+</div>
+
+<!-- 2. Table Section -->
+<div class="card-section"
+    style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <h2 style="margin-bottom: 5px;">📊 Dynamic Editable Summary Report</h2>
+    <p style="font-size: 13px; color: #666; margin-bottom: 15px;">* Click on any cell text below to edit directly!</p>
+
+    <table id="editableSummaryTable" style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #f8f9fa; border-bottom: 2px solid #edf2f7; text-align: left;">
+                <th style="padding: 12px;">Report ID</th>
+                <th style="padding: 12px;">Dominant Pathogen</th>
+                <th style="padding: 12px;">Resistance Rate</th>
+                <th style="padding: 12px;">Status</th>
+                <th style="padding: 12px;">Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr style="border-bottom: 1px solid #edf2f7;">
+                <td contenteditable="true" style="padding: 12px;">#REP-2026-08</td>
+                <td contenteditable="true" style="padding: 12px;">E. coli</td>
+                <td contenteditable="true" style="padding: 12px; color: #d62828; font-weight: bold;">58.4%</td>
+                <td contenteditable="true" style="padding: 12px; color: #dc3545; font-weight: bold;">HIGH (Completed)
+                </td>
+                <td style="padding: 12px;"><button onclick="this.parentElement.parentElement.remove()"
+                        style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button>
+                </td>
+            </tr>
+            <tr style="border-bottom: 1px solid #edf2f7;">
+                <td contenteditable="true" style="padding: 12px;">#REP-2026-07</td>
+                <td contenteditable="true" style="padding: 12px;">Klebsiella pneumoniae</td>
+                <td contenteditable="true" style="padding: 12px; color: #f77f00; font-weight: bold;">49.2%</td>
+                <td contenteditable="true" style="padding: 12px; color: #28a745; font-weight: bold;">LOW (Archived)</td>
+                <td style="padding: 12px;"><button onclick="this.parentElement.parentElement.remove()"
+                        style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- 3. Working JavaScript Logic -->
+<script>
+    document.getElementById('addBtn').addEventListener('click', function () {
+        let reportID = document.getElementById('inputReportID').value;
+        let pathogen = document.getElementById('inputPathogen').value;
+        let rate = document.getElementById('inputRate').value;
+        let status = document.getElementById('inputStatus').value;
+
+        if (!reportID || !pathogen || !rate) {
+            alert("Please fill in all fields before adding!");
+            return;
+        }
+
+        let tbody = document.getElementById('tableBody');
+        let newRow = document.createElement('tr');
+        newRow.style.borderBottom = "1px solid #edf2f7";
+
+        let statusColor = status.includes('HIGH') ? '#dc3545' : '#28a745';
+
+        newRow.innerHTML = `
+        <td contenteditable="true" style="padding: 12px;">${reportID}</td>
+        <td contenteditable="true" style="padding: 12px;">${pathogen}</td>
+        <td contenteditable="true" style="padding: 12px; font-weight: bold;">${rate}</td>
+        <td contenteditable="true" style="padding: 12px; color: ${statusColor}; font-weight: bold;">${status}</td>
+        <td style="padding: 12px;"><button onclick="this.parentElement.parentElement.remove()" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button></td>
+    `;
+
+        tbody.appendChild(newRow);
+
+        // Clear inputs
+        document.getElementById('inputReportID').value = '';
+        document.getElementById('inputPathogen').value = '';
+        document.getElementById('inputRate').value = '';
+    });
+</script>
+    </div>
+
+    <footer>
+        <p>AMR Surveillance System | Page 7: Reports & Export Data</p>
+    </footer>
+
+    <script>
+        function exportData(type) {
+            alert("Exporting surveillance report as " + type + " file format...");
+        }
+    </script>
+</body>
+
+</html>
